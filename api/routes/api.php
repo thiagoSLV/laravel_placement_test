@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Whoops\Run;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +20,23 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('company')
+    ->controller(CompanyController::class)
+    ->group(function(){
+        Route::get('/', 'all');
+        Route::get('/{id}', 'getById');
+        Route::post('/', 'store');
+        Route::put('/{id}', 'edit');
+        Route::delete('/{id}', 'destroy');
+    });
+
+    Route::prefix('supplier')
+    ->controller(SupplierController::class)
+    ->group(function(){
+        Route::get('/', 'all');
+        Route::get('/{id}', 'getById');
+        Route::post('/', 'store');
+        Route::put('/{id}', 'edit');
+        Route::delete('/{id}', 'destroy');
+    });

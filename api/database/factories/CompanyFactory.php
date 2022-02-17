@@ -2,11 +2,15 @@
 
 namespace Database\Factories;
 
+
+use Database\Factories\GenerateCNPJ;
+use Database\Factories\SelectState;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CompanyFactory extends Factory
 {
-    protected $UFs = ['RO','AC','AM','RR','PA','AP','TO','MA','PI','CE','RN','PB','PE','AL','SE','BA','MG','ES','RJ','SP','PR','SC','RS','MS','MT','GO','DF'];
+    use GenerateCNPJ;
+    use SelectState;
     /**
      * Define the model's default state.
      *
@@ -15,9 +19,9 @@ class CompanyFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
-            'state' => $this->UFs[rand(0, sizeof($this->UFs)-1)],
-            'CNPJ' =>  $this->faker->numberBetween(10000000000000, 99999999999999),
+            'name' => $this->faker->company(),
+            'state' => $this->randState(),
+            'CNPJ' =>  $this->CNPJ(),
         ];
     }
 }

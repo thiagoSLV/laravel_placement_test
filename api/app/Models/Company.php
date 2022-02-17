@@ -10,6 +10,5 @@ class Company extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'state', 'CNPJ'];
-    protected $connection = 'mysql';
 
 }

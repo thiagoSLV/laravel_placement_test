@@ -19,4 +19,5 @@ class Supplier extends Model
         'RG',
         'birth_date'
     ];
+
 }
