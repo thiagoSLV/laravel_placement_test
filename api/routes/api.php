@@ -33,6 +33,7 @@ Route::prefix('company')
 
     Route::prefix('supplier')
     ->controller(SupplierController::class)
+    ->middleware('ageVerify')
     ->group(function(){
         Route::get('/', 'all');
         Route::get('/{id}', 'getById');

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Company;
 use App\Models\Supplier;
+use Carbon\Carbon;
 use Database\Factories\GenerateCNPJ;
 use Database\Factories\GenerateCPF;
 use Database\Factories\GenerateRG;
@@ -384,7 +385,6 @@ class SupplierTest extends TestCase
         $response = $this->delete("/api/supplier/{$supplier->id}");
         $response->assertOk();
     }
-
     /** @test */
     public function fail_destroy(){
         $response = $this->delete("/api/supplier/");
@@ -392,5 +392,41 @@ class SupplierTest extends TestCase
 
         $response = $this->delete("/api/supplier/1");
         $response->assertNotFound();
+    }
+    /** @test */
+    public function check_age_verify_middleware(){
+        $response = $this->postJson('/api/supplier', [
+            'company_id' =>  Company::factory(['state' => 'PR'])->create()->id,
+            'name' => 'test_name',
+            'state' => 'SC',
+            'CPF' => $this->CPF(),
+            'RG' => $this->RG(),
+            'birth_date' => Carbon::now()->subYears(15)->format('Y-m-d'),
+            'phone_numbers' =>  json_encode([0000000]),
+        ]);
+        $response->assertUnprocessable();
+
+        $response = $this->postJson('/api/supplier', [
+            'company_id' => Company::factory(['state' => 'PR'])->create()->id,
+            'name' => 'test_name',
+            'state' => 'SC',
+            'CPF' => $this->CPF(),
+            'RG' => $this->RG(),
+            'birth_date' => Carbon::now()->subYears(25)->format('Y-m-d'),
+            'phone_numbers' =>  json_encode([0000000]),
+        ]);
+        $response->assertCreated();
+
+        $response = $this->postJson('/api/supplier', [
+            'company_id' => Company::factory(['state' => 'SC'])->create()->id,
+            'name' => 'test_name',
+            'state' => 'SC',
+            'CPF' => $this->CPF(),
+            'RG' => $this->RG(),
+            'birth_date' => Carbon::now()->subYears(15)->format('Y-m-d'),
+            'phone_numbers' =>  json_encode([0000000]),
+        ]);
+        $response->assertCreated();
+
     }
 }
